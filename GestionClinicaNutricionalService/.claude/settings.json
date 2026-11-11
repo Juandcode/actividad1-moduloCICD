@@ -1,0 +1,22 @@
+{
+  "hooks": {
+    "UserPromptExpansion": [
+      {
+        "matcher": "integration-tests",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell.exe",
+            "args": [
+              "-NoProfile",
+              "-ExecutionPolicy",
+              "Bypass",
+              "-File",
+              "${CLAUDE_PROJECT_DIR}/.claude/hooks/track-integration-tests.ps1"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

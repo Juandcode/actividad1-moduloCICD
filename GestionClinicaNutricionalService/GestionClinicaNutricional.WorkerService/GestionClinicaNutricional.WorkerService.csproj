@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Joseco.Communication.External.RabbitMQ" />
+    <PackageReference Include="Joseco.Outbox.EFCore" />
+    <PackageReference Include="Serilog.AspNetCore" />
+    <PackageReference Include="Serilog.Enrichers.Span" />
+<!--    <PackageReference Include="Nur.Tricenter.Observability" />-->
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GestionClinicaNutricional.Infrastructure\GestionClinicaNutricional.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

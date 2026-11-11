@@ -1,0 +1,49 @@
+# Build - cualquier carpeta bin/ u obj/ sin importar dónde esté
+**/bin/
+**/obj/
+
+# Archivos generados por source generators (EmitCompilerGeneratedFiles)
+**/Generated/
+
+# Resultados de test y reportes de cobertura (se regeneran con dotnet test / reportgenerator)
+TestResults/
+**/TestResults/
+coveragereport/
+
+# Publish output
+**/publish/
+**/out/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Rider
+.idea/
+
+# VS Code
+.vscode/
+
+# Logs
+*.log
+logs/
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+.nuget/
+
+# Secrets y configuración local
+appsettings.Development.json
+appsettings.Local.json
+*.pfx
+*.p12
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini

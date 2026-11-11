@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Joseco.Communication.External.Contracts" />
+      <PackageReference Include="Joseco.Communication.External.RabbitMQ" />
+      <PackageReference Include="Joseco.Outbox.EFCore" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+      <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
+<!--      <PackageReference Include="Nur.Tricenter.Observability" />-->
+<!--      <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />-->
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\GestionClinicaNutricional.Application\GestionClinicaNutricional.Application.csproj" />
+      <ProjectReference Include="..\GestionClinicaNutricional.Domain\GestionClinicaNutricional.Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Queries\" />
+    </ItemGroup>
+
+</Project>

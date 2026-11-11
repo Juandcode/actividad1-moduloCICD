@@ -1,0 +1,67 @@
+name: Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore GestionClinicaNutricionalService.sln
+
+      - name: Run tests with coverage
+        run: >
+          dotnet test Tests/Tests.csproj
+          --configuration Release
+          --collect:"XPlat Code Coverage"
+          --settings coverlet.runsettings
+          --logger "trx;LogFileName=test-results.trx"
+          --results-directory ./TestResults
+
+      - name: Install ReportGenerator
+        if: always()
+        run: dotnet tool install -g dotnet-reportgenerator-globaltool
+
+      - name: Generate coverage report
+        if: always()
+        run: >
+          reportgenerator
+          "-reports:TestResults/*/coverage.cobertura.xml"
+          "-targetdir:coveragereport"
+          "-reporttypes:Html;MarkdownSummary;Badges"
+
+      - name: Add coverage summary to job
+        if: always()
+        run: cat coveragereport/Summary.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: TestResults/**/*.trx
+          retention-days: 15
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coveragereport
+          retention-days: 15
