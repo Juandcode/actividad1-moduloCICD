@@ -57,8 +57,8 @@ namespace Tests
 				Peso = 70,
 				Altura = 1.75,
 				Composicion = "Composicion de prueba",
-				Antecedentes = new List<AntecedenteRequest>(),
-				HabitoAlimenticios = new List<HabitoAlimenticioRequest>()
+				Antecedentes = [],
+				HabitoAlimenticios = []
 			};
 			Result<Guid> mediatorResult = Guid.NewGuid();
 

@@ -1,1 +1,1 @@
-dotnet format ./GestionClinicaNutricionalService/GestionClinicaNutricionalService.sln --exclude GestionClinicaNutricionalService/GestionClinicaNutricional.Infrastructure/Migrations/ --no-restore --severity info --exclude-diagnostics IDE0130 IDE1006 --verbosity diagnostic
+dotnet format ./GestionClinicaNutricionalService/GestionClinicaNutricionalService.sln --exclude GestionClinicaNutricionalService/GestionClinicaNutricional.Infrastructure/Migrations/ --no-restore --verbosity diagnostic

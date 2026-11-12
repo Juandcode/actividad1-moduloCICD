@@ -1,12 +1,11 @@
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using FakeItEasy;
 using GestionClinicaNutricional.Application.PlanAlimenticio;
 using GestionClinicaNutricional.Domain;
 using GestionClinicaNutricional.Domain.Repositories;
 using Joseco.DDD.Core.Abstractions;
-using FakeItEasy;
 using Joseco.DDD.Core.Results;
 using NUnit.Framework;
 
