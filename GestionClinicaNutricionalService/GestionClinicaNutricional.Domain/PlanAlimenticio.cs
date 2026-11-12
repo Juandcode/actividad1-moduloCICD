@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
 using Joseco.DDD.Core.Abstractions;
 
 namespace GestionClinicaNutricional.Domain
@@ -14,8 +13,8 @@ namespace GestionClinicaNutricional.Domain
 		public EstadoPlan EstadoPlan { get; set; }
 		public DateTime FechaVencimiento { get; set; }
 		public DateTime FechaSiguienteControl { get; set; }
-		public virtual ICollection<Evaluacion> Evaluaciones { get; set; } = new List<Evaluacion>();
-		public virtual ICollection<PlanComida> PlanComidas { get; set; } = new List<PlanComida>();
+		public virtual ICollection<Evaluacion> Evaluaciones { get; set; } = [];
+		public virtual ICollection<PlanComida> PlanComidas { get; set; } = [];
 
 		// public Guid ConsultaInicialId { get;  set; }
 		// public virtual ConsultaInicial ConsultaInicial { get; set; }

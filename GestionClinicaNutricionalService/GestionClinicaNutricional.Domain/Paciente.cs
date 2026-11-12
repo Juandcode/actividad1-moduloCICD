@@ -13,9 +13,9 @@ namespace GestionClinicaNutricional.Domain
 		public string Nombre { get; set; } = null!;
 		public string Apellido { get; set; } = null!;
 
-		public virtual ICollection<ConsultaInicial> ConsultaIniciales { get; set; } = new List<ConsultaInicial>();
+		public virtual ICollection<ConsultaInicial> ConsultaIniciales { get; set; } = [];
 
-		[JsonIgnore] public virtual ICollection<PlanAlimenticio> PlanAlimenticios { get; set; } = new List<PlanAlimenticio>();
+		[JsonIgnore] public virtual ICollection<PlanAlimenticio> PlanAlimenticios { get; set; } = [];
 
 		public static Paciente Crear(string ci, string nombre, string apellido)
 		{

@@ -11,7 +11,7 @@ namespace GestionClinicaNutricional.Application.Paciente
 	{
 		public async Task<Result<List<ConsultaInicial>>> Handle(GetConsultasCommand request, CancellationToken cancellationToken)
 		{
-			var consultas = await consultaInicialRepository.AllConsultasAsync(request.PacienteId);
+			List<ConsultaInicial> consultas = await consultaInicialRepository.AllConsultasAsync(request.PacienteId);
 			return consultas;
 		}
 	}

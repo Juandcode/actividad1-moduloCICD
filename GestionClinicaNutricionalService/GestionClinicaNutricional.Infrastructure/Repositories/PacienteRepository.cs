@@ -12,13 +12,21 @@ namespace GestionClinicaNutricional.Infrastructure.Repositories
 			if (readOnly)
 			{
 				paciente = await databaseContext.Paciente.AsNoTracking().FirstOrDefaultAsync(i => i.Id == id);
-				if (paciente == null) throw new NullReferenceException("Paciente no encontrado.");
+				if (paciente == null)
+				{
+					throw new NullReferenceException("Paciente no encontrado.");
+				}
+
 				await databaseContext.Entry(paciente).Collection(p => p.ConsultaIniciales).LoadAsync();
 			}
 			else
 			{
 				paciente = await databaseContext.Paciente.FirstOrDefaultAsync(i => i.Id == id);
-				if (paciente == null) throw new NullReferenceException("Paciente no encontrado.");
+				if (paciente == null)
+				{
+					throw new NullReferenceException("Paciente no encontrado.");
+				}
+
 				await databaseContext.Entry(paciente).Collection(p => p.ConsultaIniciales).LoadAsync();
 			}
 
@@ -27,7 +35,7 @@ namespace GestionClinicaNutricional.Infrastructure.Repositories
 
 		public async Task AddAsync(Paciente entity)
 		{
-			await databaseContext.Paciente.AddAsync(entity);
+			_ = await databaseContext.Paciente.AddAsync(entity);
 		}
 
 		public Task UpdateAsync(Paciente paciente)
@@ -42,7 +50,7 @@ namespace GestionClinicaNutricional.Infrastructure.Repositories
 			// }
 
 
-			databaseContext.Paciente.Update(paciente);
+			_ = databaseContext.Paciente.Update(paciente);
 			return Task.CompletedTask;
 		}
 	}

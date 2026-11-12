@@ -32,7 +32,7 @@ namespace Tests
 			var consultas = new List<ConsultaInicial> { A.Dummy<ConsultaInicial>() };
 			Result<List<ConsultaInicial>> mediatorResult = consultas;
 
-			A.CallTo(() => mediator.Send(
+			_ = A.CallTo(() => mediator.Send(
 					A<GetConsultasCommand>.That.Matches(c => c.PacienteId == pacienteId),
 					A<CancellationToken>._))
 				.Returns(mediatorResult);
@@ -40,14 +40,14 @@ namespace Tests
 			var controller = new AtencionController(mediator);
 
 			// Act
-			var actionResult = await controller.Consultas(pacienteId);
+			IActionResult actionResult = await controller.Consultas(pacienteId);
 
 			// Assert
 			var okResult = actionResult as OkObjectResult;
 			Assert.That(okResult, Is.Not.Null);
 			Assert.That(okResult!.Value, Is.EqualTo(mediatorResult));
 
-			A.CallTo(() => mediator.Send(
+			_ = A.CallTo(() => mediator.Send(
 					A<GetConsultasCommand>.That.Matches(c => c.PacienteId == pacienteId),
 					A<CancellationToken>._))
 				.MustHaveHappenedOnceExactly();

@@ -7,18 +7,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GestionClinicaNutricional.Infrastructure
 {
-	internal class UnitOfWork : IUnitOfWork, IOutboxDatabase<DomainEvent>
+	internal class UnitOfWork(DatabaseContext dbContext, IMediator mediator) : IUnitOfWork, IOutboxDatabase<DomainEvent>
 	{
-		private readonly DatabaseContext _dbContext;
-		private readonly IMediator _mediator;
+		private readonly DatabaseContext _dbContext = dbContext;
+		private readonly IMediator _mediator = mediator;
 
-		public UnitOfWork(DatabaseContext dbContext, IMediator mediator)
+		public DbSet<OutboxMessage<DomainEvent>> GetOutboxMessages()
 		{
-			_dbContext = dbContext;
-			_mediator = mediator;
+			return _dbContext.OutboxMessages;
 		}
-
-		public DbSet<OutboxMessage<DomainEvent>> GetOutboxMessages() => _dbContext.OutboxMessages;
 
 		public async Task CommitAsync(CancellationToken cancellationToken = default)
 		{
@@ -26,7 +23,7 @@ namespace GestionClinicaNutricional.Infrastructure
 			//Get domain events
 			var domainEvents = _dbContext.ChangeTracker
 				.Entries<Entity>()
-				.Where(x => x.Entity.DomainEvents.Any())
+				.Where(x => x.Entity.DomainEvents.Count != 0)
 				.Select(entityEntry =>
 				{
 					var domainEvents = entityEntry.Entity
@@ -42,13 +39,13 @@ namespace GestionClinicaNutricional.Infrastructure
 			//[[e1, e2], [e3]] => [e1, e2, e3]
 
 			//Publish Domain Events
-			foreach (var domainEvent in domainEvents)
+			foreach (DomainEvent? domainEvent in domainEvents)
 			{
 				await _mediator.Publish(domainEvent, cancellationToken);
 			}
 
 
-			await _dbContext.SaveChangesAsync(cancellationToken);
+			_ = await _dbContext.SaveChangesAsync(cancellationToken);
 		}
 	}
 }

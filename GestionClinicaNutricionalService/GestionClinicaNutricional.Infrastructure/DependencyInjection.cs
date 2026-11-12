@@ -1,7 +1,6 @@
 using System.Reflection;
 using GestionClinicaNutricional.Application;
 using GestionClinicaNutricional.Domain.Repositories;
-using GestionClinicaNutricional.Infrastructure.Observability;
 using GestionClinicaNutricional.Infrastructure.Repositories;
 using Joseco.DDD.Core.Abstractions;
 using Joseco.Outbox.EFCore;
@@ -18,7 +17,7 @@ namespace GestionClinicaNutricional.Infrastructure
 			this IServiceCollection services,
 			IConfiguration configuration)
 		{
-			services.AddApplication();
+			_ = services.AddApplication();
 
 			var connectionString = configuration.GetConnectionString("DefaultConnection");
 
@@ -28,17 +27,17 @@ namespace GestionClinicaNutricional.Infrastructure
 					"Connection string 'DefaultConnection' is missing or empty.");
 			}
 
-			services.AddDbContext<DatabaseContext>(
+			_ = services.AddDbContext<DatabaseContext>(
 				context =>
 					context.UseSqlServer(connectionString));
 
-			services.AddScoped<IUnitOfWork, UnitOfWork>();
-			services.AddScoped<IOutboxDatabase<DomainEvent>, UnitOfWork>().AddOutbox<DomainEvent>();
-			services.AddScoped<IConsultaInicialRepository, ConsultaInicialRepository>();
-			services.AddScoped<IPacienteRepository, PacienteRepository>();
-			services.AddScoped<IPlanAlimenticioRepository, PlanAlimenticioRepository>();
+			_ = services.AddScoped<IUnitOfWork, UnitOfWork>();
+			_ = services.AddScoped<IOutboxDatabase<DomainEvent>, UnitOfWork>().AddOutbox<DomainEvent>();
+			_ = services.AddScoped<IConsultaInicialRepository, ConsultaInicialRepository>();
+			_ = services.AddScoped<IPacienteRepository, PacienteRepository>();
+			_ = services.AddScoped<IPlanAlimenticioRepository, PlanAlimenticioRepository>();
 
-			services.AddMediatR(config =>
+			_ = services.AddMediatR(config =>
 				config.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly())
 			);
 

@@ -6,12 +6,12 @@ using GestionClinicaNutricional.Application.PlanAlimenticio;
 using GestionClinicaNutricional.Domain;
 using GestionClinicaNutricional.Domain.Repositories;
 using Joseco.DDD.Core.Abstractions;
+using FakeItEasy;
+using Joseco.DDD.Core.Results;
+using NUnit.Framework;
 
 namespace Tests
 {
-	using FakeItEasy;
-	using NUnit.Framework;
-
 	[TestFixture]
 	public class PlanAlimenticioTests
 	{
@@ -33,7 +33,7 @@ namespace Tests
 		public async Task PlanAlimenticio_ShouldCreatePlanAlimenticioSuccessfully()
 		{
 			// Arrange
-			var paciente = A.Dummy<Paciente>();
+			Paciente paciente = A.Dummy<Paciente>();
 
 			var command = new CreatePlanAlimenticioCommand
 			{
@@ -42,11 +42,11 @@ namespace Tests
 				DuracionPlan = DuracionPlan.Mes,
 				EstadoPlan = EstadoPlan.Vigente,
 				FechaVencimiento = DateTime.Now.AddDays(30),
-				PlanComidas = new List<PlanComida>(),
+				PlanComidas = [],
 				PacienteId = Guid.NewGuid()
 			};
 
-			A.CallTo(() => pacienteRepository.GetByIdAsync(A<Guid>._, A<bool>._))
+			_ = A.CallTo(() => pacienteRepository.GetByIdAsync(A<Guid>._, A<bool>._))
 				.Returns(paciente);
 
 			var handler = new CreatePlanAlimenticioHandler(
@@ -56,17 +56,17 @@ namespace Tests
 				unitOfWork);
 
 			// Act
-			var result = await handler.Handle(command, CancellationToken.None);
+			Result<Guid> result = await handler.Handle(command, CancellationToken.None);
 
 			// Assert
-			A.CallTo(() => planAlimenticioRepository.AddAsync(
+			_ = A.CallTo(() => planAlimenticioRepository.AddAsync(
 					A<PlanAlimenticio>.That.Matches(p =>
 						p.Descripcion == command.Descripcion &&
 						p.Nombre == command.Nombre &&
 						p.PacienteId == paciente.Id)))
 				.MustHaveHappenedOnceExactly();
 
-			A.CallTo(() => unitOfWork.CommitAsync(A<CancellationToken>._))
+			_ = A.CallTo(() => unitOfWork.CommitAsync(A<CancellationToken>._))
 				.MustHaveHappenedOnceExactly();
 
 			Assert.That(result.IsSuccess, Is.True);

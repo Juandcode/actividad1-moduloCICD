@@ -11,8 +11,7 @@ namespace GestionClinicaNutricional.Infrastructure.Repositories
 			ConsultaInicial? consultaInicial = await databaseContext.ConsultaInicial
 				.Where(i => i.PacienteId == pacienteId)
 				.OrderByDescending(i => i.Fecha)
-				.FirstOrDefaultAsync();
-			if (consultaInicial == null) throw new NullReferenceException("Consulta no encontrado.");
+				.FirstOrDefaultAsync() ?? throw new NullReferenceException("Consulta no encontrado.");
 			return consultaInicial;
 		}
 
@@ -23,13 +22,21 @@ namespace GestionClinicaNutricional.Infrastructure.Repositories
 			{
 				consultaInicial = await databaseContext.ConsultaInicial.AsNoTracking()
 					.FirstOrDefaultAsync(i => i.Id == id);
-				if (consultaInicial == null) throw new NullReferenceException("Consulta no encontrado.");
+				if (consultaInicial == null)
+				{
+					throw new NullReferenceException("Consulta no encontrado.");
+				}
+
 				await databaseContext.Entry(consultaInicial).Collection(p => p.HabitoAlimenticios).LoadAsync();
 			}
 			else
 			{
 				consultaInicial = await databaseContext.ConsultaInicial.FirstOrDefaultAsync(i => i.Id == id);
-				if (consultaInicial == null) throw new NullReferenceException("Consulta no encontrado.");
+				if (consultaInicial == null)
+				{
+					throw new NullReferenceException("Consulta no encontrado.");
+				}
+
 				await databaseContext.Entry(consultaInicial).Collection(p => p.HabitoAlimenticios).LoadAsync();
 			}
 
@@ -38,7 +45,7 @@ namespace GestionClinicaNutricional.Infrastructure.Repositories
 
 		public async Task AddAsync(ConsultaInicial entity)
 		{
-			await databaseContext.ConsultaInicial.AddAsync(entity);
+			_ = await databaseContext.ConsultaInicial.AddAsync(entity);
 		}
 
 		public Task UpdateAsync(ConsultaInicial consultaInicial, List<HabitoAlimenticio> habitoAlimenticios)
@@ -51,7 +58,7 @@ namespace GestionClinicaNutricional.Infrastructure.Repositories
 			ConsultaInicial consultaInicial,
 			List<HabitoAlimenticio> habitoAlimenticios)
 		{
-			foreach (var habitoAlimenticio in habitoAlimenticios)
+			foreach (HabitoAlimenticio habitoAlimenticio in habitoAlimenticios)
 			{
 				habitoAlimenticio.ConsultaInicialId = consultaInicial.Id;
 			}
@@ -63,7 +70,7 @@ namespace GestionClinicaNutricional.Infrastructure.Repositories
 
 		public async Task<List<ConsultaInicial>> AllConsultasAsync(Guid pacienteId)
 		{
-			var consultas = await databaseContext.ConsultaInicial.Where(c => c.PacienteId == pacienteId)
+			List<ConsultaInicial> consultas = await databaseContext.ConsultaInicial.Where(c => c.PacienteId == pacienteId)
 				.Include(c => c.HabitoAlimenticios)
 				.OrderByDescending(c => c.Fecha).ToListAsync();
 			return consultas;
@@ -71,9 +78,9 @@ namespace GestionClinicaNutricional.Infrastructure.Repositories
 
 		public async Task ApproveConsulta(Guid consultaId)
 		{
-			var consulta = await databaseContext.ConsultaInicial.FirstOrDefaultAsync(c => c.Id == consultaId);
+			ConsultaInicial? consulta = await databaseContext.ConsultaInicial.FirstOrDefaultAsync(c => c.Id == consultaId);
 			consulta.Estado = true;
-			databaseContext.ConsultaInicial.Update(consulta);
+			_ = databaseContext.ConsultaInicial.Update(consulta);
 		}
 	}
 }

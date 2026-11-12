@@ -10,7 +10,7 @@ namespace GestionClinicaNutricional.Application.Paciente
 	{
 		public async Task<Result<Guid>> Handle(CreateConsultaCommand request, CancellationToken cancellationToken)
 		{
-			Domain.ConsultaInicial consulta = new Domain.ConsultaInicial()
+			var consulta = new Domain.ConsultaInicial()
 			{
 				Altura = request.Altura,
 				Antecedentes = request.Antecedentes,

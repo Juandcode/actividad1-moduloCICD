@@ -33,13 +33,13 @@ namespace Tests
 			var command = new CreatePacienteCommand { CI = "12345678", Nombre = "Juan", Apellido = "Perez" };
 			Result<Guid> mediatorResult = Guid.NewGuid();
 
-			A.CallTo(() => mediator.Send(command, A<CancellationToken>._))
+			_ = A.CallTo(() => mediator.Send(command, A<CancellationToken>._))
 				.Returns(mediatorResult);
 
 			var controller = new PatientController(mediator);
 
 			// Act
-			var actionResult = await controller.CreatePaciente(command);
+			IActionResult actionResult = await controller.CreatePaciente(command);
 
 			// Assert
 			var okResult = actionResult as OkObjectResult;
@@ -59,11 +59,11 @@ namespace Tests
 				DuracionPlan = DuracionPlan.Mes,
 				EstadoPlan = EstadoPlan.Vigente,
 				FechaVencimiento = DateTime.Now.AddDays(30),
-				PlanComidas = new List<PlanComidaRequest>()
+				PlanComidas = []
 			};
 			Result<Guid> mediatorResult = Guid.NewGuid();
 
-			A.CallTo(() => mediator.Send(
+			_ = A.CallTo(() => mediator.Send(
 					A<CreatePlanAlimenticioCommand>.That.Matches(c => c.PacienteId == pacienteId),
 					A<CancellationToken>._))
 				.Returns(mediatorResult);
@@ -71,14 +71,14 @@ namespace Tests
 			var controller = new PatientController(mediator);
 
 			// Act
-			var actionResult = await controller.Plan(pacienteId, command);
+			IActionResult actionResult = await controller.Plan(pacienteId, command);
 
 			// Assert
 			var okResult = actionResult as OkObjectResult;
 			Assert.That(okResult, Is.Not.Null);
 			Assert.That(okResult!.Value, Is.EqualTo(mediatorResult));
 
-			A.CallTo(() => mediator.Send(
+			_ = A.CallTo(() => mediator.Send(
 					A<CreatePlanAlimenticioCommand>.That.Matches(c => c.PacienteId == pacienteId),
 					A<CancellationToken>._))
 				.MustHaveHappenedOnceExactly();
@@ -92,7 +92,7 @@ namespace Tests
 			var command = new ProximaEvaluacionCommand { ProximaFecha = DateTime.Now.AddDays(15) };
 			Result<Guid> mediatorResult = planAlimenticioId;
 
-			A.CallTo(() => mediator.Send(
+			_ = A.CallTo(() => mediator.Send(
 					A<ProximaEvaluacionCommand>.That.Matches(c => c.PlanAlimenticioId == planAlimenticioId),
 					A<CancellationToken>._))
 				.Returns(mediatorResult);
@@ -100,7 +100,7 @@ namespace Tests
 			var controller = new PatientController(mediator);
 
 			// Act
-			var actionResult = await controller.SchedulePlan(planAlimenticioId, command);
+			IActionResult actionResult = await controller.SchedulePlan(planAlimenticioId, command);
 
 			// Assert
 			var okResult = actionResult as OkObjectResult;
@@ -116,7 +116,7 @@ namespace Tests
 			var evaluaciones = new List<Evaluacion> { A.Dummy<Evaluacion>() };
 			Result<List<Evaluacion>> mediatorResult = evaluaciones;
 
-			A.CallTo(() => mediator.Send(
+			_ = A.CallTo(() => mediator.Send(
 					A<GetEvaluacionesCommand>.That.Matches(c => c.PlanAlimenticioId == planAlimenticioId),
 					A<CancellationToken>._))
 				.Returns(mediatorResult);
@@ -124,7 +124,7 @@ namespace Tests
 			var controller = new PatientController(mediator);
 
 			// Act
-			var actionResult = await controller.ControlEvaluationHistory(planAlimenticioId);
+			IActionResult actionResult = await controller.ControlEvaluationHistory(planAlimenticioId);
 
 			// Assert
 			var okResult = actionResult as OkObjectResult;
@@ -140,7 +140,7 @@ namespace Tests
 			var command = new CreateEvaluacionCommand { Descripcion = "Evaluacion de control" };
 			Result<Guid> mediatorResult = Guid.NewGuid();
 
-			A.CallTo(() => mediator.Send(
+			_ = A.CallTo(() => mediator.Send(
 					A<CreateEvaluacionCommand>.That.Matches(c => c.PlanAlimenticioId == planAlimenticioId),
 					A<CancellationToken>._))
 				.Returns(mediatorResult);
@@ -148,7 +148,7 @@ namespace Tests
 			var controller = new PatientController(mediator);
 
 			// Act
-			var actionResult = await controller.CreateControlEvaluacion(planAlimenticioId, command);
+			IActionResult actionResult = await controller.CreateControlEvaluacion(planAlimenticioId, command);
 
 			// Assert
 			var okResult = actionResult as OkObjectResult;

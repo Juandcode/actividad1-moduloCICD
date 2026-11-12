@@ -6,14 +6,9 @@ using MediatR;
 
 namespace GestionClinicaNutricional.Application.UseCase.DomainEventHandler
 {
-	public class SaveInOutboxWhenPacienteCreated : INotificationHandler<PacienteCreated>
+	public class SaveInOutboxWhenPacienteCreated(IOutboxService<DomainEvent> outboxService) : INotificationHandler<PacienteCreated>
 	{
-		private readonly IOutboxService<DomainEvent> _outboxService;
-
-		public SaveInOutboxWhenPacienteCreated(IOutboxService<DomainEvent> outboxService)
-		{
-			_outboxService = outboxService;
-		}
+		private readonly IOutboxService<DomainEvent> _outboxService = outboxService;
 
 		public async Task Handle(PacienteCreated notification, CancellationToken cancellationToken = default)
 		{

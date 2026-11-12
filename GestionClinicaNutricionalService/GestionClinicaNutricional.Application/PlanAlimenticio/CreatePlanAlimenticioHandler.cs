@@ -1,5 +1,3 @@
-using GestionClinicaNutricional.Application.Paciente;
-using GestionClinicaNutricional.Domain;
 using GestionClinicaNutricional.Domain.Repositories;
 using Joseco.DDD.Core.Abstractions;
 using Joseco.DDD.Core.Results;

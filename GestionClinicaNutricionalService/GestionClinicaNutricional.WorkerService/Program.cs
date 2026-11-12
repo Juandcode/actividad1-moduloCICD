@@ -1,6 +1,4 @@
 using System.Reflection;
-using GestionClinicaNutricional.Application;
-using GestionClinicaNutricional.Application.UseCase.DomainEventHandler;
 using GestionClinicaNutricional.Infrastructure;
 //using GestionClinicaNutricional.Infrastructure.Observability;
 using GestionClinicaNutricional.WorkerService;
@@ -10,7 +8,7 @@ using Joseco.Outbox.EFCore;
 using Serilog;
 using Serilog.Enrichers.Span;
 
-var builder = Host.CreateApplicationBuilder(args);
+HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
 
 builder.Services.AddSerilog((services, configuration) => configuration
 	.ReadFrom.Configuration(builder.Configuration)
@@ -38,5 +36,5 @@ builder.Services.AddMediatR(config =>
 	config.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly())
 );
 
-var host = builder.Build();
+IHost host = builder.Build();
 host.Run();

@@ -1,4 +1,3 @@
-using GestionClinicaNutricional.Domain;
 using Joseco.DDD.Core.Results;
 using MediatR;
 

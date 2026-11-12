@@ -5,6 +5,7 @@ using FakeItEasy;
 using GestionClinicaNutricional.Application.Paciente;
 using GestionClinicaNutricional.Domain.Repositories;
 using Joseco.DDD.Core.Abstractions;
+using Joseco.DDD.Core.Results;
 using NUnit.Framework;
 
 namespace Tests
@@ -31,13 +32,13 @@ namespace Tests
 			var handler = new ApproveConsultaHandler(consultaInicialRepository, unitOfWork);
 
 			// Act
-			var result = await handler.Handle(command, CancellationToken.None);
+			Result<Guid> result = await handler.Handle(command, CancellationToken.None);
 
 			// Assert
-			A.CallTo(() => consultaInicialRepository.ApproveConsulta(command.ConsultaId))
+			_ = A.CallTo(() => consultaInicialRepository.ApproveConsulta(command.ConsultaId))
 				.MustHaveHappenedOnceExactly();
 
-			A.CallTo(() => unitOfWork.CommitAsync(A<CancellationToken>._))
+			_ = A.CallTo(() => unitOfWork.CommitAsync(A<CancellationToken>._))
 				.MustHaveHappenedOnceExactly();
 
 			Assert.That(result.IsSuccess, Is.True);

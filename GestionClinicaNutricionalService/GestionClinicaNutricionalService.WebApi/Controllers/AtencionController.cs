@@ -1,5 +1,6 @@
 using GestionClinicaNutricional.Application.Paciente;
-using GestionClinicaNutricional.Application.PlanAlimenticio;
+using GestionClinicaNutricional.Domain;
+using Joseco.DDD.Core.Results;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,7 +24,7 @@ namespace GestionClinicaNutricionalService.WebApi.Controllers
 		public async Task<IActionResult> Consultas([FromRoute] Guid pacienteId)
 		{
 			var requestConId = new GetConsultasCommand { PacienteId = pacienteId };
-			var result = await mediator.Send(requestConId);
+			Result<List<ConsultaInicial>> result = await mediator.Send(requestConId);
 
 			return Ok(result);
 		}

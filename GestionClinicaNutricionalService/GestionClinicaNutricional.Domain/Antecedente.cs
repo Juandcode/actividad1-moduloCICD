@@ -8,10 +8,14 @@ namespace GestionClinicaNutricional.Domain
 		public Antecedente(string descripcion, Problema problema)
 		{
 			if (string.IsNullOrWhiteSpace(descripcion))
+			{
 				throw new ArgumentException("Descripción requerida");
+			}
 
-			if (!Enum.IsDefined(typeof(Problema), problema))
+			if (!Enum.IsDefined(problema))
+			{
 				throw new ArgumentException("Problema inválido");
+			}
 
 			Descripcion = descripcion;
 			Problema = problema;

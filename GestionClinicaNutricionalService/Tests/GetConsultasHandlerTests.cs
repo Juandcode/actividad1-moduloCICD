@@ -7,6 +7,7 @@ using GestionClinicaNutricional.Application.Paciente;
 using GestionClinicaNutricional.Domain;
 using GestionClinicaNutricional.Domain.Repositories;
 using Joseco.DDD.Core.Abstractions;
+using Joseco.DDD.Core.Results;
 using NUnit.Framework;
 
 namespace Tests
@@ -37,16 +38,16 @@ namespace Tests
 
 			var command = new GetConsultasCommand { PacienteId = pacienteId };
 
-			A.CallTo(() => consultaInicialRepository.AllConsultasAsync(pacienteId))
+			_ = A.CallTo(() => consultaInicialRepository.AllConsultasAsync(pacienteId))
 				.Returns(consultas);
 
 			var handler = new GetConsultasHandler(consultaInicialRepository, unitOfWork);
 
 			// Act
-			var result = await handler.Handle(command, CancellationToken.None);
+			Result<List<ConsultaInicial>> result = await handler.Handle(command, CancellationToken.None);
 
 			// Assert
-			A.CallTo(() => consultaInicialRepository.AllConsultasAsync(pacienteId))
+			_ = A.CallTo(() => consultaInicialRepository.AllConsultasAsync(pacienteId))
 				.MustHaveHappenedOnceExactly();
 
 			Assert.That(result.IsSuccess, Is.True);

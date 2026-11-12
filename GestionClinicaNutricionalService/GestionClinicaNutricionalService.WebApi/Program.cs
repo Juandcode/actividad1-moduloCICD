@@ -1,9 +1,7 @@
-using System.Reflection;
 using GestionClinicaNutricional.Infrastructure;
 //using GestionClinicaNutricional.Infrastructure.DependencyInjection;
-using GestionClinicaNutricionalService;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // Disable service validation to prevent crashes on startup if some optional services are missing
 builder.Host.UseDefaultServiceProvider(options =>
@@ -28,7 +26,7 @@ builder.Services.AddOpenApiDocument(config =>
 	//config.SchemaSettings.SchemaProcessors.Add(new ExcludeHabitoAlimenticioPropertySchemaProcessor());
 });
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())

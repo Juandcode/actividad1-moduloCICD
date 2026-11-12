@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using GestionClinicaNutricional.Domain;
 using Joseco.DDD.Core.Results;
 using MediatR;
 

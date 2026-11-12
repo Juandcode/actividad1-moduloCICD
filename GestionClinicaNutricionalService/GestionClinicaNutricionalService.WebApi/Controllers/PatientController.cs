@@ -2,6 +2,7 @@ using GestionClinicaNutricional.Application.Paciente;
 using GestionClinicaNutricional.Application.PlanAlimenticio;
 using GestionClinicaNutricional.Domain;
 using GestionClinicaNutricionalService.Contracts;
+using Joseco.DDD.Core.Results;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,7 +17,7 @@ namespace GestionClinicaNutricionalService.WebApi.Controllers
 		[HttpPost(nameof(CreatePaciente))]
 		public async Task<IActionResult> CreatePaciente([FromBody] CreatePacienteCommand request)
 		{
-			var result = await mediator.Send(request);
+			Result<Guid> result = await mediator.Send(request);
 
 			return Ok(result);
 		}
@@ -31,19 +32,19 @@ namespace GestionClinicaNutricionalService.WebApi.Controllers
 				PacienteId = pacienteId,
 				DuracionPlan = request.DuracionPlan,
 				EstadoPlan = request.EstadoPlan,
-				PlanComidas = request.PlanComidas.Select(
+				PlanComidas = [.. request.PlanComidas.Select(
 					planComida => new PlanComida()
 					{
 						Nombre = planComida.Nombre,
 						Descripcion = planComida.Descripcion,
 						Categoria = planComida.Categoria
-					}).ToList(),
+					})],
 				Descripcion = request.Descripcion,
 				Nombre = request.Nombre,
 				FechaVencimiento = request.FechaVencimiento,
 			};
 			//var requestConId = request with { PacienteId = pacienteId };
-			var result = await mediator.Send(command);
+			Result<Guid> result = await mediator.Send(command);
 
 			return Ok(result);
 		}
@@ -53,8 +54,8 @@ namespace GestionClinicaNutricionalService.WebApi.Controllers
 			[FromRoute] Guid planAlimenticioId,
 			[FromBody] ProximaEvaluacionCommand request)
 		{
-			var requestConId = request with { PlanAlimenticioId = planAlimenticioId };
-			var result = await mediator.Send(requestConId);
+			ProximaEvaluacionCommand requestConId = request with { PlanAlimenticioId = planAlimenticioId };
+			Result<Guid> result = await mediator.Send(requestConId);
 
 			return Ok(result);
 		}
@@ -64,7 +65,7 @@ namespace GestionClinicaNutricionalService.WebApi.Controllers
 		public async Task<IActionResult> ControlEvaluationHistory([FromRoute] Guid planAlimenticioId)
 		{
 			var request = new GetEvaluacionesCommand { PlanAlimenticioId = planAlimenticioId };
-			var result = await mediator.Send(request);
+			Result<List<Evaluacion>> result = await mediator.Send(request);
 
 			return Ok(result);
 		}
@@ -74,8 +75,8 @@ namespace GestionClinicaNutricionalService.WebApi.Controllers
 			[FromRoute] Guid planAlimenticioId,
 			[FromBody] CreateEvaluacionCommand request)
 		{
-			var requestConId = request with { PlanAlimenticioId = planAlimenticioId };
-			var result = await mediator.Send(requestConId);
+			CreateEvaluacionCommand requestConId = request with { PlanAlimenticioId = planAlimenticioId };
+			Result<Guid> result = await mediator.Send(requestConId);
 
 			return Ok(result);
 		}
@@ -94,14 +95,9 @@ namespace GestionClinicaNutricionalService.WebApi.Controllers
 		public async Task<IActionResult> GetPacienteById([FromRoute] Guid id)
 		{
 			var request = new GetPacienteByIdQuery { Id = id };
-			var result = await mediator.Send(request);
+			Result<Paciente> result = await mediator.Send(request);
 
-			if (result.IsFailure)
-			{
-				return NotFound(result.Error);
-			}
-
-			return Ok(result.Value);
+			return result.IsFailure ? NotFound(result.Error) : Ok(result.Value);
 		}
 	}
 }

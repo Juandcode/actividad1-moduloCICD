@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using GestionClinicaNutricional.Domain;
@@ -16,8 +17,8 @@ namespace IntegrationTests.Controllers
 		[Fact]
 		public async Task Consultation_WithValidRequest()
 		{
-			var client = factory.CreateClient();
-			var pacienteId = await ApiScenarios.CreatePacienteAsync(client);
+			HttpClient client = factory.CreateClient();
+			Guid pacienteId = await ApiScenarios.CreatePacienteAsync(client);
 
 			var consulta = new
 			{
@@ -34,20 +35,20 @@ namespace IntegrationTests.Controllers
 				}
 			};
 
-			var response = await client.PostAsJsonAsync(
+			HttpResponseMessage response = await client.PostAsJsonAsync(
 				$"api/v1/Consultation/{pacienteId}/Consultation",
 				consulta);
 
-			response.EnsureSuccessStatusCode();
+			_ = response.EnsureSuccessStatusCode();
 
-			var body = (await response.Content.ReadFromJsonAsync<ResultResponse<Guid>>())!;
+			ResultResponse<Guid> body = (await response.Content.ReadFromJsonAsync<ResultResponse<Guid>>())!;
 			Assert.NotNull(body);
 			Assert.True(body.IsSuccess);
 			Assert.False(body.IsFailure);
 
 			using IServiceScope scope = factory.Services.CreateScope();
-			var repository = scope.ServiceProvider.GetRequiredService<IConsultaInicialRepository>();
-			var created = (await repository.GetByIdAsync(body.Value))!;
+			IConsultaInicialRepository repository = scope.ServiceProvider.GetRequiredService<IConsultaInicialRepository>();
+			ConsultaInicial created = (await repository.GetByIdAsync(body.Value))!;
 			Assert.NotNull(created);
 			Assert.Equal(82, created.Peso);
 			Assert.Equal(1.8, created.Altura);
@@ -58,14 +59,14 @@ namespace IntegrationTests.Controllers
 		[Fact]
 		public async Task Consultations_WithValidRequest()
 		{
-			var client = factory.CreateClient();
-			var pacienteId = await ApiScenarios.CreatePacienteAsync(client);
-			var consultaId = await ApiScenarios.CreateConsultaAsync(client, pacienteId);
+			HttpClient client = factory.CreateClient();
+			Guid pacienteId = await ApiScenarios.CreatePacienteAsync(client);
+			Guid consultaId = await ApiScenarios.CreateConsultaAsync(client, pacienteId);
 
-			var response = await client.GetAsync($"api/v1/Consultation/{pacienteId}/Consultations");
-			response.EnsureSuccessStatusCode();
+			HttpResponseMessage response = await client.GetAsync($"api/v1/Consultation/{pacienteId}/Consultations");
+			_ = response.EnsureSuccessStatusCode();
 
-			var body = (await response.Content.ReadFromJsonAsync<ResultResponse<List<ConsultaInicial>>>())!;
+			ResultResponse<List<ConsultaInicial>> body = (await response.Content.ReadFromJsonAsync<ResultResponse<List<ConsultaInicial>>>())!;
 			Assert.NotNull(body);
 			Assert.True(body.IsSuccess);
 			Assert.False(body.IsFailure);
@@ -75,22 +76,22 @@ namespace IntegrationTests.Controllers
 		[Fact]
 		public async Task Approve_WithValidRequest()
 		{
-			var client = factory.CreateClient();
-			var pacienteId = await ApiScenarios.CreatePacienteAsync(client);
-			var consultaId = await ApiScenarios.CreateConsultaAsync(client, pacienteId);
+			HttpClient client = factory.CreateClient();
+			Guid pacienteId = await ApiScenarios.CreatePacienteAsync(client);
+			Guid consultaId = await ApiScenarios.CreateConsultaAsync(client, pacienteId);
 
-			var response = await client.PostAsync($"api/v1/Consultation/{consultaId}/Approve", null);
-			response.EnsureSuccessStatusCode();
+			HttpResponseMessage response = await client.PostAsync($"api/v1/Consultation/{consultaId}/Approve", null);
+			_ = response.EnsureSuccessStatusCode();
 
-			var body = (await response.Content.ReadFromJsonAsync<ResultResponse<Guid>>())!;
+			ResultResponse<Guid> body = (await response.Content.ReadFromJsonAsync<ResultResponse<Guid>>())!;
 			Assert.NotNull(body);
 			Assert.True(body.IsSuccess);
 			Assert.False(body.IsFailure);
 			Assert.Equal(consultaId, body.Value);
 
 			using IServiceScope scope = factory.Services.CreateScope();
-			var repository = scope.ServiceProvider.GetRequiredService<IConsultaInicialRepository>();
-			var approved = (await repository.GetByIdAsync(consultaId))!;
+			IConsultaInicialRepository repository = scope.ServiceProvider.GetRequiredService<IConsultaInicialRepository>();
+			ConsultaInicial approved = (await repository.GetByIdAsync(consultaId))!;
 			Assert.True(approved.Estado);
 		}
 	}

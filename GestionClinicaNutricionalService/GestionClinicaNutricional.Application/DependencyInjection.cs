@@ -1,5 +1,4 @@
 using System.Reflection;
-using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GestionClinicaNutricional.Application
@@ -8,9 +7,9 @@ namespace GestionClinicaNutricional.Application
 	{
 		public static IServiceCollection AddApplication(this IServiceCollection services)
 		{
-			services.AddMediatR(config =>
+			_ = services.AddMediatR(config =>
 			{
-				config.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+				_ = config.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
 			});
 
 			return services;

@@ -1,7 +1,6 @@
 using GestionClinicaNutricional.Application.Contracts;
 using GestionClinicaNutricional.Domain.Events;
 using Joseco.Communication.External.Contracts.Services;
-using Joseco.DDD.Core.Abstractions;
 using Joseco.Outbox.Contracts.Model;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -12,26 +11,20 @@ namespace GestionClinicaNutricional.Application.UseCase.DomainEventHandler
 	/// Translates the outbox message that carries <see cref="PacienteCreated"/> into the
 	/// external contract and publishes it to RabbitMQ.
 	/// </summary>
-	public class PublishIntegrationEventWhenPacienteCreated
-		: INotificationHandler<OutboxMessage<PacienteCreated>>
+	public class PublishIntegrationEventWhenPacienteCreated(
+		ILogger<PublishIntegrationEventWhenPacienteCreated> logger,
+		IExternalPublisher publisher)
+				: INotificationHandler<OutboxMessage<PacienteCreated>>
 	{
 		public const string Destination = "paciente-published";
 		public const string Source = "gestion-clinica-nutricional";
 
-		private readonly ILogger<PublishIntegrationEventWhenPacienteCreated> _logger;
-		private readonly IExternalPublisher _publisher;
-
-		public PublishIntegrationEventWhenPacienteCreated(
-			ILogger<PublishIntegrationEventWhenPacienteCreated> logger,
-			IExternalPublisher publisher)
-		{
-			_logger = logger;
-			_publisher = publisher;
-		}
+		private readonly ILogger<PublishIntegrationEventWhenPacienteCreated> _logger = logger;
+		private readonly IExternalPublisher _publisher = publisher;
 
 		public async Task Handle(OutboxMessage<PacienteCreated> notification, CancellationToken cancellationToken = default)
 		{
-			var pacienteCreated = notification.Content;
+			PacienteCreated pacienteCreated = notification.Content;
 
 			var message = new PacientePublished(notification.CorrelationId, Source)
 			{

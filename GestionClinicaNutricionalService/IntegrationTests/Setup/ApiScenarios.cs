@@ -9,7 +9,7 @@ namespace IntegrationTests.Setup
 	{
 		public static async Task<Guid> CreatePacienteAsync(HttpClient client)
 		{
-			var response = await client.PostAsJsonAsync(
+			HttpResponseMessage response = await client.PostAsJsonAsync(
 				"api/v1/Patient/CreatePaciente",
 				new
 				{
@@ -18,9 +18,9 @@ namespace IntegrationTests.Setup
 					Apellido = "Cabrera"
 				});
 
-			response.EnsureSuccessStatusCode();
+			_ = response.EnsureSuccessStatusCode();
 
-			var body = await response.Content.ReadFromJsonAsync<ResultResponse<Guid>>();
+			ResultResponse<Guid>? body = await response.Content.ReadFromJsonAsync<ResultResponse<Guid>>();
 			return body!.Value;
 		}
 
@@ -44,10 +44,10 @@ namespace IntegrationTests.Setup
 				}
 			};
 
-			var response = await client.PostAsJsonAsync($"api/v1/Patient/{pacienteId}/Plan", plan);
-			response.EnsureSuccessStatusCode();
+			HttpResponseMessage response = await client.PostAsJsonAsync($"api/v1/Patient/{pacienteId}/Plan", plan);
+			_ = response.EnsureSuccessStatusCode();
 
-			var body = await response.Content.ReadFromJsonAsync<ResultResponse<Guid>>();
+			ResultResponse<Guid>? body = await response.Content.ReadFromJsonAsync<ResultResponse<Guid>>();
 			return body!.Value;
 		}
 
@@ -68,12 +68,12 @@ namespace IntegrationTests.Setup
 				}
 			};
 
-			var response = await client.PostAsJsonAsync(
+			HttpResponseMessage response = await client.PostAsJsonAsync(
 				$"api/v1/Consultation/{pacienteId}/Consultation",
 				consulta);
-			response.EnsureSuccessStatusCode();
+			_ = response.EnsureSuccessStatusCode();
 
-			var body = await response.Content.ReadFromJsonAsync<ResultResponse<Guid>>();
+			ResultResponse<Guid>? body = await response.Content.ReadFromJsonAsync<ResultResponse<Guid>>();
 			return body!.Value;
 		}
 	}

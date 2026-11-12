@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using Joseco.DDD.Core.Abstractions;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace GestionClinicaNutricional.Domain
 {

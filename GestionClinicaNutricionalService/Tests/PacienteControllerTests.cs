@@ -33,13 +33,13 @@ namespace Tests
 			var command = new CreatePacienteCommand { CI = "12345678", Nombre = "Juan", Apellido = "Perez" };
 			Result<Guid> mediatorResult = Guid.NewGuid();
 
-			A.CallTo(() => mediator.Send(command, A<CancellationToken>._))
+			_ = A.CallTo(() => mediator.Send(command, A<CancellationToken>._))
 				.Returns(mediatorResult);
 
 			var controller = new PacienteController(mediator);
 
 			// Act
-			var actionResult = await controller.CreatePaciente(command);
+			IActionResult actionResult = await controller.CreatePaciente(command);
 
 			// Assert
 			var okResult = actionResult as OkObjectResult;
@@ -62,7 +62,7 @@ namespace Tests
 			};
 			Result<Guid> mediatorResult = Guid.NewGuid();
 
-			A.CallTo(() => mediator.Send(
+			_ = A.CallTo(() => mediator.Send(
 					A<CreateConsultaCommand>.That.Matches(c => c.PacienteId == pacienteId),
 					A<CancellationToken>._))
 				.Returns(mediatorResult);
@@ -70,7 +70,7 @@ namespace Tests
 			var controller = new PacienteController(mediator);
 
 			// Act
-			var actionResult = await controller.CreateConsulta(pacienteId, command);
+			IActionResult actionResult = await controller.CreateConsulta(pacienteId, command);
 
 			// Assert
 			var okResult = actionResult as OkObjectResult;
@@ -86,7 +86,7 @@ namespace Tests
 			var command = new CreateEvaluacionCommand { Descripcion = "Evaluacion de control" };
 			Result<Guid> mediatorResult = Guid.NewGuid();
 
-			A.CallTo(() => mediator.Send(
+			_ = A.CallTo(() => mediator.Send(
 					A<CreateEvaluacionCommand>.That.Matches(c => c.PlanAlimenticioId == planAlimenticioId),
 					A<CancellationToken>._))
 				.Returns(mediatorResult);
@@ -94,7 +94,7 @@ namespace Tests
 			var controller = new PacienteController(mediator);
 
 			// Act
-			var actionResult = await controller.CreateEvaluacion(planAlimenticioId, command);
+			IActionResult actionResult = await controller.CreateEvaluacion(planAlimenticioId, command);
 
 			// Assert
 			var okResult = actionResult as OkObjectResult;
@@ -110,7 +110,7 @@ namespace Tests
 			var evaluaciones = new List<Evaluacion> { A.Dummy<Evaluacion>() };
 			Result<List<Evaluacion>> mediatorResult = evaluaciones;
 
-			A.CallTo(() => mediator.Send(
+			_ = A.CallTo(() => mediator.Send(
 					A<GetEvaluacionesCommand>.That.Matches(c => c.PlanAlimenticioId == planAlimenticioId),
 					A<CancellationToken>._))
 				.Returns(mediatorResult);
@@ -118,7 +118,7 @@ namespace Tests
 			var controller = new PacienteController(mediator);
 
 			// Act
-			var actionResult = await controller.Evaluaciones(planAlimenticioId);
+			IActionResult actionResult = await controller.Evaluaciones(planAlimenticioId);
 
 			// Assert
 			var okResult = actionResult as OkObjectResult;

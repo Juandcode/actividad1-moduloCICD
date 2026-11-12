@@ -1,11 +1,9 @@
 using Joseco.Communication.External.RabbitMQ.Services;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 
 namespace GestionClinicaNutricional.WorkerService
 {
-	public sealed class DefaultQueueRegistrar : BackgroundService
+	public sealed class DefaultQueueRegistrar(RabbitMqSettings settings, ILogger<DefaultQueueRegistrar> logger) : BackgroundService
 	{
 		private const int DefaultPort = 5672;
 		private static readonly TimeSpan RetryDelay = TimeSpan.FromSeconds(10);
@@ -14,21 +12,14 @@ namespace GestionClinicaNutricional.WorkerService
 		private const bool QueueIsDurable = true;
 		private static readonly IDictionary<string, object?> NoArguments = new Dictionary<string, object?>();
 
-		private readonly RabbitMqSettings _settings;
-		private readonly ILogger<DefaultQueueRegistrar> _logger;
-
-		public DefaultQueueRegistrar(RabbitMqSettings settings, ILogger<DefaultQueueRegistrar> logger)
-		{
-			_settings = settings;
-			_logger = logger;
-		}
-
+		private readonly RabbitMqSettings _settings = settings;
+		private readonly ILogger<DefaultQueueRegistrar> _logger = logger;
 		public const string QueueName = "gestion-clinica-nutricional.default";
 
-		public static IReadOnlyList<string> BoundExchanges { get; } = new[]
-		{
+		public static IReadOnlyList<string> BoundExchanges { get; } =
+		[
 			"paciente-published"
-		};
+		];
 
 		protected override async Task ExecuteAsync(CancellationToken stoppingToken)
 		{
@@ -85,10 +76,10 @@ namespace GestionClinicaNutricional.WorkerService
 				VirtualHost = _settings.VirtualHost
 			};
 
-			await using var connection = await factory.CreateConnectionAsync("gestion-clinica-default-queue", cancellationToken);
-			await using var channel = await connection.CreateChannelAsync(cancellationToken: cancellationToken);
+			await using IConnection connection = await factory.CreateConnectionAsync("gestion-clinica-default-queue", cancellationToken);
+			await using IChannel channel = await connection.CreateChannelAsync(cancellationToken: cancellationToken);
 
-			await channel.QueueDeclareAsync(
+			_ = await channel.QueueDeclareAsync(
 				QueueName,
 				durable: QueueIsDurable,
 				exclusive: false,

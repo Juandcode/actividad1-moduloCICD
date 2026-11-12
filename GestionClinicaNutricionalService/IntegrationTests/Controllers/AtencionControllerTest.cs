@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -14,14 +15,14 @@ namespace IntegrationTests.Controllers
 		[Fact]
 		public async Task Consultas_WithValidRequest()
 		{
-			var client = factory.CreateClient();
-			var pacienteId = await ApiScenarios.CreatePacienteAsync(client);
-			var consultaId = await ApiScenarios.CreateConsultaAsync(client, pacienteId);
+			HttpClient client = factory.CreateClient();
+			Guid pacienteId = await ApiScenarios.CreatePacienteAsync(client);
+			Guid consultaId = await ApiScenarios.CreateConsultaAsync(client, pacienteId);
 
-			var response = await client.PostAsync($"Atencion/{pacienteId}/Consultas", null);
-			response.EnsureSuccessStatusCode();
+			HttpResponseMessage response = await client.PostAsync($"Atencion/{pacienteId}/Consultas", null);
+			_ = response.EnsureSuccessStatusCode();
 
-			var body = (await response.Content.ReadFromJsonAsync<ResultResponse<List<ConsultaInicial>>>())!;
+			ResultResponse<List<ConsultaInicial>> body = (await response.Content.ReadFromJsonAsync<ResultResponse<List<ConsultaInicial>>>())!;
 			Assert.NotNull(body);
 			Assert.True(body.IsSuccess);
 			Assert.False(body.IsFailure);

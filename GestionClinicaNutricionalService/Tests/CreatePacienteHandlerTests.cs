@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using FakeItEasy;
@@ -5,6 +6,7 @@ using GestionClinicaNutricional.Application.Paciente;
 using GestionClinicaNutricional.Domain;
 using GestionClinicaNutricional.Domain.Repositories;
 using Joseco.DDD.Core.Abstractions;
+using Joseco.DDD.Core.Results;
 using NUnit.Framework;
 
 namespace Tests
@@ -36,17 +38,17 @@ namespace Tests
 			var handler = new CreatePacienteHandler(pacienteRepository, unitOfWork);
 
 			// Act
-			var result = await handler.Handle(command, CancellationToken.None);
+			Result<Guid> result = await handler.Handle(command, CancellationToken.None);
 
 			// Assert
-			A.CallTo(() => pacienteRepository.AddAsync(
+			_ = A.CallTo(() => pacienteRepository.AddAsync(
 					A<Paciente>.That.Matches(p =>
 						p.CI == command.CI &&
 						p.Nombre == command.Nombre &&
 						p.Apellido == command.Apellido)))
 				.MustHaveHappenedOnceExactly();
 
-			A.CallTo(() => unitOfWork.CommitAsync(A<CancellationToken>._))
+			_ = A.CallTo(() => unitOfWork.CommitAsync(A<CancellationToken>._))
 				.MustHaveHappenedOnceExactly();
 
 			Assert.That(result.IsSuccess, Is.True);

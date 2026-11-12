@@ -6,6 +6,7 @@ using FakeItEasy;
 using GestionClinicaNutricional.Application.PlanAlimenticio;
 using GestionClinicaNutricional.Domain;
 using GestionClinicaNutricional.Domain.Repositories;
+using Joseco.DDD.Core.Results;
 using NUnit.Framework;
 
 namespace Tests
@@ -34,16 +35,16 @@ namespace Tests
 
 			var command = new GetEvaluacionesCommand { PlanAlimenticioId = planAlimenticioId };
 
-			A.CallTo(() => planAlimenticioRepository.GetEvaluaciones(planAlimenticioId))
+			_ = A.CallTo(() => planAlimenticioRepository.GetEvaluaciones(planAlimenticioId))
 				.Returns(evaluaciones);
 
 			var handler = new GetEvaluacionesHandler(planAlimenticioRepository);
 
 			// Act
-			var result = await handler.Handle(command, CancellationToken.None);
+			Result<List<Evaluacion>> result = await handler.Handle(command, CancellationToken.None);
 
 			// Assert
-			A.CallTo(() => planAlimenticioRepository.GetEvaluaciones(planAlimenticioId))
+			_ = A.CallTo(() => planAlimenticioRepository.GetEvaluaciones(planAlimenticioId))
 				.MustHaveHappenedOnceExactly();
 
 			Assert.That(result.IsSuccess, Is.True);

@@ -12,13 +12,21 @@ namespace GestionClinicaNutricional.Infrastructure.Repositories
 			if (readOnly)
 			{
 				planAlimenticio = await databaseContext.PlanAlimenticio.AsNoTracking().FirstOrDefaultAsync(i => i.Id == id);
-				if (planAlimenticio == null) throw new NullReferenceException("Paciente no encontrado.");
+				if (planAlimenticio == null)
+				{
+					throw new NullReferenceException("Paciente no encontrado.");
+				}
+
 				await databaseContext.Entry(planAlimenticio).Collection(p => p.Evaluaciones).LoadAsync();
 			}
 			else
 			{
 				planAlimenticio = await databaseContext.PlanAlimenticio.FirstOrDefaultAsync(i => i.Id == id);
-				if (planAlimenticio == null) throw new NullReferenceException("Paciente no encontrado.");
+				if (planAlimenticio == null)
+				{
+					throw new NullReferenceException("Paciente no encontrado.");
+				}
+
 				await databaseContext.Entry(planAlimenticio).Collection(p => p.Evaluaciones).LoadAsync();
 			}
 
@@ -27,7 +35,7 @@ namespace GestionClinicaNutricional.Infrastructure.Repositories
 
 		public async Task AddAsync(PlanAlimenticio entity)
 		{
-			await databaseContext.PlanAlimenticio.AddAsync(entity);
+			_ = await databaseContext.PlanAlimenticio.AddAsync(entity);
 		}
 
 		public Task UpdateAsync(PlanAlimenticio paciente)
@@ -42,28 +50,28 @@ namespace GestionClinicaNutricional.Infrastructure.Repositories
 			// }
 
 
-			databaseContext.PlanAlimenticio.Update(paciente);
+			_ = databaseContext.PlanAlimenticio.Update(paciente);
 			return Task.CompletedTask;
 		}
 
 		public async Task AddEvaluacion(PlanAlimenticio planAlimenticio, Evaluacion evaluacion)
 		{
 			evaluacion.PlanAlimenticioId = planAlimenticio.Id;
-			await databaseContext.Evaluacion.AddAsync(evaluacion);
+			_ = await databaseContext.Evaluacion.AddAsync(evaluacion);
 			//databaseContext.PlanAlimenticio.Update(planAlimenticio);
 		}
 
 		public Task<List<Evaluacion>> GetEvaluaciones(Guid planAlimenticioId)
 		{
-			List<Evaluacion> evaluaciones = databaseContext.Evaluacion.Where(e => e.PlanAlimenticioId == planAlimenticioId).ToList();
+			List<Evaluacion> evaluaciones = [.. databaseContext.Evaluacion.Where(e => e.PlanAlimenticioId == planAlimenticioId)];
 			return Task.FromResult(evaluaciones);
 		}
 
 		public async Task ProgramarProximoControl(Guid planAlimenticioId, DateTime fecha)
 		{
-			var planAlimenticio = await databaseContext.PlanAlimenticio.FirstOrDefaultAsync(p => p.Id == planAlimenticioId);
+			PlanAlimenticio? planAlimenticio = await databaseContext.PlanAlimenticio.FirstOrDefaultAsync(p => p.Id == planAlimenticioId);
 			planAlimenticio.FechaSiguienteControl = fecha;
-			databaseContext.PlanAlimenticio.Update(planAlimenticio);
+			_ = databaseContext.PlanAlimenticio.Update(planAlimenticio);
 		}
 	}
 }

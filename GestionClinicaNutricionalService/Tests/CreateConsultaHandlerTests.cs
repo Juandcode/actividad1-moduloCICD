@@ -7,6 +7,7 @@ using GestionClinicaNutricional.Application.Paciente;
 using GestionClinicaNutricional.Domain;
 using GestionClinicaNutricional.Domain.Repositories;
 using Joseco.DDD.Core.Abstractions;
+using Joseco.DDD.Core.Results;
 using NUnit.Framework;
 
 namespace Tests
@@ -30,8 +31,7 @@ namespace Tests
 			// Arrange
 			var habitoAlimenticios = new List<HabitoAlimenticio>
 			{
-				new HabitoAlimenticio
-				{
+				new() {
 					Nombre = "Desayuno",
 					Descripcion = "Desayuno balanceado",
 					Categoria = CategoriaComida.Omnivora
@@ -43,10 +43,10 @@ namespace Tests
 				Peso = 70,
 				Altura = 1.75,
 				Composicion = "Composicion de prueba",
-				Antecedentes = new List<Antecedente>
-				{
+				Antecedentes =
+				[
 					new Antecedente("Antecedente de prueba", Problema.SobrePeso)
-				},
+				],
 				HabitoAlimenticios = habitoAlimenticios,
 				PacienteId = Guid.NewGuid()
 			};
@@ -54,10 +54,10 @@ namespace Tests
 			var handler = new CreateConsultaHandler(consultaInicialRepository, unitOfWork);
 
 			// Act
-			var result = await handler.Handle(command, CancellationToken.None);
+			Result<Guid> result = await handler.Handle(command, CancellationToken.None);
 
 			// Assert
-			A.CallTo(() => consultaInicialRepository.AddAsync(
+			_ = A.CallTo(() => consultaInicialRepository.AddAsync(
 					A<ConsultaInicial>.That.Matches(c =>
 						c.Peso == command.Peso &&
 						c.Altura == command.Altura &&
@@ -65,12 +65,12 @@ namespace Tests
 						c.PacienteId == command.PacienteId)))
 				.MustHaveHappenedOnceExactly();
 
-			A.CallTo(() => consultaInicialRepository.AddHabitoAlimenticiosAsync(
+			_ = A.CallTo(() => consultaInicialRepository.AddHabitoAlimenticiosAsync(
 					A<ConsultaInicial>._,
 					command.HabitoAlimenticios))
 				.MustHaveHappenedOnceExactly();
 
-			A.CallTo(() => unitOfWork.CommitAsync(A<CancellationToken>._))
+			_ = A.CallTo(() => unitOfWork.CommitAsync(A<CancellationToken>._))
 				.MustHaveHappenedOnceExactly();
 
 			Assert.That(result.IsSuccess, Is.True);

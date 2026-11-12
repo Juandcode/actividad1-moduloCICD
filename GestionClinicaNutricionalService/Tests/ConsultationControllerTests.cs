@@ -40,7 +40,7 @@ namespace Tests
 			};
 			Result<Guid> mediatorResult = Guid.NewGuid();
 
-			A.CallTo(() => mediator.Send(
+			_ = A.CallTo(() => mediator.Send(
 					A<CreateConsultaCommand>.That.Matches(c => c.PacienteId == pacienteId),
 					A<CancellationToken>._))
 				.Returns(mediatorResult);
@@ -48,14 +48,14 @@ namespace Tests
 			var controller = new ConsultationController(mediator);
 
 			// Act
-			var actionResult = await controller.Consultation(pacienteId, command);
+			IActionResult actionResult = await controller.Consultation(pacienteId, command);
 
 			// Assert
 			var okResult = actionResult as OkObjectResult;
 			Assert.That(okResult, Is.Not.Null);
 			Assert.That(okResult!.Value, Is.EqualTo(mediatorResult));
 
-			A.CallTo(() => mediator.Send(
+			_ = A.CallTo(() => mediator.Send(
 					A<CreateConsultaCommand>.That.Matches(c => c.PacienteId == pacienteId),
 					A<CancellationToken>._))
 				.MustHaveHappenedOnceExactly();
@@ -69,7 +69,7 @@ namespace Tests
 			var consultas = new List<ConsultaInicial> { A.Dummy<ConsultaInicial>() };
 			Result<List<ConsultaInicial>> mediatorResult = consultas;
 
-			A.CallTo(() => mediator.Send(
+			_ = A.CallTo(() => mediator.Send(
 					A<GetConsultasCommand>.That.Matches(c => c.PacienteId == pacienteId),
 					A<CancellationToken>._))
 				.Returns(mediatorResult);
@@ -77,7 +77,7 @@ namespace Tests
 			var controller = new ConsultationController(mediator);
 
 			// Act
-			var actionResult = await controller.Consultations(pacienteId);
+			IActionResult actionResult = await controller.Consultations(pacienteId);
 
 			// Assert
 			var okResult = actionResult as OkObjectResult;
@@ -92,7 +92,7 @@ namespace Tests
 			var consultaId = Guid.NewGuid();
 			Result<Guid> mediatorResult = consultaId;
 
-			A.CallTo(() => mediator.Send(
+			_ = A.CallTo(() => mediator.Send(
 					A<ApproveConsultaCommand>.That.Matches(c => c.ConsultaId == consultaId),
 					A<CancellationToken>._))
 				.Returns(mediatorResult);
@@ -100,7 +100,7 @@ namespace Tests
 			var controller = new ConsultationController(mediator);
 
 			// Act
-			var actionResult = await controller.Approve(consultaId);
+			IActionResult actionResult = await controller.Approve(consultaId);
 
 			// Assert
 			var okResult = actionResult as OkObjectResult;

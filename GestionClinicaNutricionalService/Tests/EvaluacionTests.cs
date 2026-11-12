@@ -6,6 +6,7 @@ using GestionClinicaNutricional.Application.PlanAlimenticio;
 using GestionClinicaNutricional.Domain;
 using GestionClinicaNutricional.Domain.Repositories;
 using Joseco.DDD.Core.Abstractions;
+using Joseco.DDD.Core.Results;
 using NUnit.Framework;
 
 namespace Tests
@@ -26,10 +27,10 @@ namespace Tests
 		[Test]
 		public async Task Evaluacion_ShouldCreateAnEvaluacionSuccessfully()
 		{
-			var planAlimenticio = A.Dummy<PlanAlimenticio>();
+			PlanAlimenticio planAlimenticio = A.Dummy<PlanAlimenticio>();
 			var simulatedOrder = new CreateEvaluacionCommand { Descripcion = "Simulated Order", PlanAlimenticioId = Guid.NewGuid() };
 
-			A.CallTo(() => planAlimenticioRepository.GetByIdAsync(A<Guid>._, A<bool>._))
+			_ = A.CallTo(() => planAlimenticioRepository.GetByIdAsync(A<Guid>._, A<bool>._))
 				.Returns(planAlimenticio);
 
 			var handler = new CreateEvaluacionHandler(planAlimenticioRepository, unitOfWork);
@@ -39,12 +40,12 @@ namespace Tests
 			//     Descripcion = "Test"
 			// };
 
-			var result = await handler.Handle(simulatedOrder, CancellationToken.None);
+			Result<Guid> result = await handler.Handle(simulatedOrder, CancellationToken.None);
 
-			A.CallTo(() => planAlimenticioRepository.AddEvaluacion(planAlimenticio, A<Evaluacion>._))
+			_ = A.CallTo(() => planAlimenticioRepository.AddEvaluacion(planAlimenticio, A<Evaluacion>._))
 				.MustHaveHappenedOnceExactly();
 
-			A.CallTo(() => unitOfWork.CommitAsync(A<CancellationToken>._))
+			_ = A.CallTo(() => unitOfWork.CommitAsync(A<CancellationToken>._))
 				.MustHaveHappenedOnceExactly();
 
 			Assert.That(result.IsSuccess, Is.True);

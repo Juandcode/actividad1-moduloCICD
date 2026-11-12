@@ -1,10 +1,6 @@
 using System;
-using System.Linq;
 using System.Threading.Tasks;
-using GestionClinicaNutricional.Domain.Repositories;
 using GestionClinicaNutricional.Infrastructure;
-using GestionClinicaNutricionalService.WebApi.Controllers;
-using Joseco.DDD.Core.Abstractions;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,7 +15,7 @@ namespace IntegrationTests.Setup
 
 		protected override void ConfigureWebHost(Microsoft.AspNetCore.Hosting.IWebHostBuilder builder)
 		{
-			builder.ConfigureServices(
+			_ = builder.ConfigureServices(
 				services =>
 				{
 					// var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(IPacienteRepository));
@@ -40,8 +36,8 @@ namespace IntegrationTests.Setup
 					// Npgsql configuration already registered by Program.cs, causing EF Core to see two
 					// providers on the same context. Register an already-built DbContextOptions instance
 					// instead, bypassing that additive pipeline entirely.
-					services.RemoveAll<DbContextOptions<DatabaseContext>>();
-					services.AddSingleton(
+					_ = services.RemoveAll<DbContextOptions<DatabaseContext>>();
+					_ = services.AddSingleton(
 						new DbContextOptionsBuilder<DatabaseContext>()
 							.UseSqlServer(
 								"Server=localhost\\SQLEXPRESS;Database=ClinicaNutricional;MultipleActiveResultSets=True;Trusted_Connection=True;TrustServerCertificate=True")
@@ -51,11 +47,14 @@ namespace IntegrationTests.Setup
 
 		public async Task InitializeAsync()
 		{
-			using var scope = Services.CreateScope();
-			var db = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
+			using IServiceScope scope = Services.CreateScope();
+			DatabaseContext db = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
 			await db.Database.MigrateAsync();
 		}
 
-		public new Task DisposeAsync() => Task.CompletedTask;// no hay contenedor que tirar
+		public new Task DisposeAsync()
+		{
+			return Task.CompletedTask;// no hay contenedor que tirar
+		}
 	}
 }

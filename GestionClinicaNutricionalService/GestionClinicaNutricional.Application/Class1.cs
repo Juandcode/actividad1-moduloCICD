@@ -1,5 +1,6 @@
-namespace GestionClinicaNutricional.Application;
-
-public class Class1
+namespace GestionClinicaNutricional.Application
 {
+	public class Class1
+	{
+	}
 }

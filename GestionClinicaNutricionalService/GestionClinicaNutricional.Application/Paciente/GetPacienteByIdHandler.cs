@@ -9,7 +9,7 @@ namespace GestionClinicaNutricional.Application.Paciente
 	{
 		public async Task<Result<Domain.Paciente>> Handle(GetPacienteByIdQuery request, CancellationToken cancellationToken)
 		{
-			var paciente = await pacienteRepository.GetByIdAsync(request.Id, true);
+			Domain.Paciente? paciente = await pacienteRepository.GetByIdAsync(request.Id, true);
 			// if (paciente == null)
 			// {
 			//     return Result<Domain.Paciente>.Failure(new Error("404","Paciente no encontrado.", ErrorType.NotFound));

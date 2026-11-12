@@ -13,7 +13,7 @@ namespace GestionClinicaNutricional.Domain
 		public bool Estado { get; set; }
 		public DateTime Fecha { get; set; } = DateTime.Now;
 
-		public List<Antecedente> Antecedentes { get; set; } = new List<Antecedente>();
+		public List<Antecedente> Antecedentes { get; set; } = [];
 		//public IReadOnlyCollection<Antecedente> Antecedentes => _antecedentes.AsReadOnly();
 
 		public List<HabitoAlimenticio> HabitoAlimenticios { get; set; }
