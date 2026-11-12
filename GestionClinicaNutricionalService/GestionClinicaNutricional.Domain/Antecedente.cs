@@ -7,7 +7,7 @@ namespace GestionClinicaNutricional.Domain
 
 		public Antecedente(string descripcion, Problema problema)
 		{
-			if (string.IsNullOrWhiteSpace(descripcion))
+				if (string.IsNullOrWhiteSpace(descripcion))
 			{
 				throw new ArgumentException("Descripción requerida");
 			}
