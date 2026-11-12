@@ -9,39 +9,39 @@ using NUnit.Framework;
 
 namespace Tests
 {
-    [TestFixture]
-    public class ApproveConsultaHandlerTests
-    {
-        private IConsultaInicialRepository consultaInicialRepository;
-        private IUnitOfWork unitOfWork;
+	[TestFixture]
+	public class ApproveConsultaHandlerTests
+	{
+		private IConsultaInicialRepository consultaInicialRepository;
+		private IUnitOfWork unitOfWork;
 
-        [SetUp]
-        public void Setup()
-        {
-            consultaInicialRepository = A.Fake<IConsultaInicialRepository>();
-            unitOfWork = A.Fake<IUnitOfWork>();
-        }
+		[SetUp]
+		public void Setup()
+		{
+			consultaInicialRepository = A.Fake<IConsultaInicialRepository>();
+			unitOfWork = A.Fake<IUnitOfWork>();
+		}
 
-        [Test]
-        public async Task ApproveConsulta_ShouldApproveConsultaSuccessfully()
-        {
-            // Arrange
-            var command = new ApproveConsultaCommand { ConsultaId = Guid.NewGuid() };
+		[Test]
+		public async Task ApproveConsulta_ShouldApproveConsultaSuccessfully()
+		{
+			// Arrange
+			var command = new ApproveConsultaCommand { ConsultaId = Guid.NewGuid() };
 
-            var handler = new ApproveConsultaHandler(consultaInicialRepository, unitOfWork);
+			var handler = new ApproveConsultaHandler(consultaInicialRepository, unitOfWork);
 
-            // Act
-            var result = await handler.Handle(command, CancellationToken.None);
+			// Act
+			var result = await handler.Handle(command, CancellationToken.None);
 
-            // Assert
-            A.CallTo(() => consultaInicialRepository.ApproveConsulta(command.ConsultaId))
-                .MustHaveHappenedOnceExactly();
+			// Assert
+			A.CallTo(() => consultaInicialRepository.ApproveConsulta(command.ConsultaId))
+				.MustHaveHappenedOnceExactly();
 
-            A.CallTo(() => unitOfWork.CommitAsync(A<CancellationToken>._))
-                .MustHaveHappenedOnceExactly();
+			A.CallTo(() => unitOfWork.CommitAsync(A<CancellationToken>._))
+				.MustHaveHappenedOnceExactly();
 
-            Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Value, Is.EqualTo(command.ConsultaId));
-        }
-    }
+			Assert.That(result.IsSuccess, Is.True);
+			Assert.That(result.Value, Is.EqualTo(command.ConsultaId));
+		}
+	}
 }

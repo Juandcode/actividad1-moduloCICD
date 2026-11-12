@@ -6,10 +6,10 @@ using GestionClinicaNutricionalService;
 var builder = WebApplication.CreateBuilder(args);
 
 // Disable service validation to prevent crashes on startup if some optional services are missing
-builder.Host.UseDefaultServiceProvider(options => 
+builder.Host.UseDefaultServiceProvider(options =>
 {
-    // options.ValidateScopes = false;
-    // options.ValidateOnBuild = false;
+	// options.ValidateScopes = false;
+	// options.ValidateOnBuild = false;
 });
 
 
@@ -18,14 +18,14 @@ builder.Host.UseDefaultServiceProvider(options =>
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 //builder.Services.AddOpenApi();
 builder.Services.AddControllers();//defines the services that are required by the MVC framework
-//builder.Services.AddOpenApiDocument();
+								  //builder.Services.AddOpenApiDocument();
 
 builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services.AddOpenApiDocument(config =>
 {
-    config.SchemaSettings.FlattenInheritanceHierarchy = true;
-    //config.SchemaSettings.SchemaProcessors.Add(new ExcludeHabitoAlimenticioPropertySchemaProcessor());
+	config.SchemaSettings.FlattenInheritanceHierarchy = true;
+	//config.SchemaSettings.SchemaProcessors.Add(new ExcludeHabitoAlimenticioPropertySchemaProcessor());
 });
 
 var app = builder.Build();
@@ -33,9 +33,9 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
 //{
-    app.MapOpenApi();
-    app.UseOpenApi();
-    app.UseSwaggerUi();
+app.MapOpenApi();
+app.UseOpenApi();
+app.UseSwaggerUi();
 //}
 
 app.UseHttpsRedirection();

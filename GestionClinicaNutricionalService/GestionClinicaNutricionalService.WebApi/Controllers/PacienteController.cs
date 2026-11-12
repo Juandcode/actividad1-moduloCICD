@@ -1,4 +1,4 @@
-﻿using GestionClinicaNutricional.Application.Paciente;
+using GestionClinicaNutricional.Application.Paciente;
 using GestionClinicaNutricional.Application.PlanAlimenticio;
 using GestionClinicaNutricional.Domain;
 using GestionClinicaNutricionalService.Contracts;

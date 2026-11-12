@@ -13,44 +13,44 @@ using NUnit.Framework;
 
 namespace Tests
 {
-    [TestFixture]
-    public class AtencionControllerTests
-    {
-        private IMediator mediator;
+	[TestFixture]
+	public class AtencionControllerTests
+	{
+		private IMediator mediator;
 
-        [SetUp]
-        public void Setup()
-        {
-            mediator = A.Fake<IMediator>();
-        }
+		[SetUp]
+		public void Setup()
+		{
+			mediator = A.Fake<IMediator>();
+		}
 
-        [Test]
-        public async Task Consultas_ShouldReturnOkWithConsultasForPaciente()
-        {
-            // Arrange
-            var pacienteId = Guid.NewGuid();
-            var consultas = new List<ConsultaInicial> { A.Dummy<ConsultaInicial>() };
-            Result<List<ConsultaInicial>> mediatorResult = consultas;
+		[Test]
+		public async Task Consultas_ShouldReturnOkWithConsultasForPaciente()
+		{
+			// Arrange
+			var pacienteId = Guid.NewGuid();
+			var consultas = new List<ConsultaInicial> { A.Dummy<ConsultaInicial>() };
+			Result<List<ConsultaInicial>> mediatorResult = consultas;
 
-            A.CallTo(() => mediator.Send(
-                    A<GetConsultasCommand>.That.Matches(c => c.PacienteId == pacienteId),
-                    A<CancellationToken>._))
-                .Returns(mediatorResult);
+			A.CallTo(() => mediator.Send(
+					A<GetConsultasCommand>.That.Matches(c => c.PacienteId == pacienteId),
+					A<CancellationToken>._))
+				.Returns(mediatorResult);
 
-            var controller = new AtencionController(mediator);
+			var controller = new AtencionController(mediator);
 
-            // Act
-            var actionResult = await controller.Consultas(pacienteId);
+			// Act
+			var actionResult = await controller.Consultas(pacienteId);
 
-            // Assert
-            var okResult = actionResult as OkObjectResult;
-            Assert.That(okResult, Is.Not.Null);
-            Assert.That(okResult!.Value, Is.EqualTo(mediatorResult));
+			// Assert
+			var okResult = actionResult as OkObjectResult;
+			Assert.That(okResult, Is.Not.Null);
+			Assert.That(okResult!.Value, Is.EqualTo(mediatorResult));
 
-            A.CallTo(() => mediator.Send(
-                    A<GetConsultasCommand>.That.Matches(c => c.PacienteId == pacienteId),
-                    A<CancellationToken>._))
-                .MustHaveHappenedOnceExactly();
-        }
-    }
+			A.CallTo(() => mediator.Send(
+					A<GetConsultasCommand>.That.Matches(c => c.PacienteId == pacienteId),
+					A<CancellationToken>._))
+				.MustHaveHappenedOnceExactly();
+		}
+	}
 }

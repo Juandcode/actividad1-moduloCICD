@@ -1,4 +1,4 @@
-﻿using GestionClinicaNutricional.Application.Paciente;
+using GestionClinicaNutricional.Application.Paciente;
 using GestionClinicaNutricional.Application.PlanAlimenticio;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;

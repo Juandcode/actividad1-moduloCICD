@@ -1,4 +1,4 @@
-﻿namespace GestionClinicaNutricional.Application;
+namespace GestionClinicaNutricional.Application;
 
 public class Class1
 {

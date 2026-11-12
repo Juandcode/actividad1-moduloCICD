@@ -1,8 +1,8 @@
-﻿namespace GestionClinicaNutricional.Domain
+namespace GestionClinicaNutricional.Domain
 {
-    public enum EstadoPlan
-    {
-        Vigente,
-        Vencido
-    }
+	public enum EstadoPlan
+	{
+		Vigente,
+		Vencido
+	}
 }

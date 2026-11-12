@@ -1,8 +1,8 @@
-﻿namespace GestionClinicaNutricional.Domain
+namespace GestionClinicaNutricional.Domain
 {
-    public enum Problema
-    {
-        BajoPeso,
-        SobrePeso,
-    }
+	public enum Problema
+	{
+		BajoPeso,
+		SobrePeso,
+	}
 }

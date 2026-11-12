@@ -1,8 +1,8 @@
-﻿using System.Reflection;
+using System.Reflection;
 using GestionClinicaNutricional.Application;
 using GestionClinicaNutricional.Domain.Repositories;
-using GestionClinicaNutricional.Infrastructure.Repositories;
 using GestionClinicaNutricional.Infrastructure.Observability;
+using GestionClinicaNutricional.Infrastructure.Repositories;
 using Joseco.DDD.Core.Abstractions;
 using Joseco.Outbox.EFCore;
 using Joseco.Outbox.EFCore.Persistence;
@@ -12,46 +12,45 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace GestionClinicaNutricional.Infrastructure
 {
-    public static class DependencyInjection
-    {
-        public static IServiceCollection AddInfrastructure(
-            this IServiceCollection services,
-            IConfiguration configuration)
-        {
-            services.AddApplication();
-            
-            var connectionString = configuration.GetConnectionString("DefaultConnection");
+	public static class DependencyInjection
+	{
+		public static IServiceCollection AddInfrastructure(
+			this IServiceCollection services,
+			IConfiguration configuration)
+		{
+			services.AddApplication();
 
-            if (string.IsNullOrWhiteSpace(connectionString))
-            {
-                throw new InvalidOperationException(
-                    "Connection string 'DefaultConnection' is missing or empty.");
-            }
+			var connectionString = configuration.GetConnectionString("DefaultConnection");
 
-            services.AddDbContext<DatabaseContext>(
-                context =>
-                    context.UseSqlServer(connectionString));
+			if (string.IsNullOrWhiteSpace(connectionString))
+			{
+				throw new InvalidOperationException(
+					"Connection string 'DefaultConnection' is missing or empty.");
+			}
 
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<IOutboxDatabase<DomainEvent>, UnitOfWork>().AddOutbox<DomainEvent>();
-            services.AddScoped<IConsultaInicialRepository, ConsultaInicialRepository>();
-            services.AddScoped<IPacienteRepository, PacienteRepository>();
-            services.AddScoped<IPlanAlimenticioRepository, PlanAlimenticioRepository>();
-            
-            services.AddMediatR(config =>
-                config.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly())
-            );
+			services.AddDbContext<DatabaseContext>(
+				context =>
+					context.UseSqlServer(connectionString));
 
-            // // Observability
-            // services.AddObservability();
-            //
-            // // Outbox & RabbitMQ
-            // services.AddJosecoOutboxEFCore(configuration);
-            // services.AddJosecoRabbitMqExternalPublisher(configuration);
-            
-            return services;
-        }
-    }
+			services.AddScoped<IUnitOfWork, UnitOfWork>();
+			services.AddScoped<IOutboxDatabase<DomainEvent>, UnitOfWork>().AddOutbox<DomainEvent>();
+			services.AddScoped<IConsultaInicialRepository, ConsultaInicialRepository>();
+			services.AddScoped<IPacienteRepository, PacienteRepository>();
+			services.AddScoped<IPlanAlimenticioRepository, PlanAlimenticioRepository>();
+
+			services.AddMediatR(config =>
+				config.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly())
+			);
+
+			// // Observability
+			// services.AddObservability();
+			//
+			// // Outbox & RabbitMQ
+			// services.AddJosecoOutboxEFCore(configuration);
+			// services.AddJosecoRabbitMqExternalPublisher(configuration);
+
+			return services;
+		}
+	}
 }
 
-  
