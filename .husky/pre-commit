@@ -1,1 +1,1 @@
- dotnet format .\GestionClinicaNutricionalService\ --verify-no-changes --verbosity diagnostic
+dotnet format ./GestionClinicaNutricionalService/ --verify-no-changes --verbosity diagnostic
