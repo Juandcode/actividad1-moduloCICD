@@ -1,2 +1,1 @@
-dotnet format whitespace ./GestionClinicaNutricionalService/GestionClinicaNutricionalService.sln --exclude GestionClinicaNutricional.Infrastructure/Migrations/
-dotnet format whitespace ./GestionClinicaNutricionalService/ --verbosity diagnostic
+dotnet format ./GestionClinicaNutricionalService/GestionClinicaNutricionalService.sln --exclude GestionClinicaNutricionalService/GestionClinicaNutricional.Infrastructure/Migrations/ --no-restore
